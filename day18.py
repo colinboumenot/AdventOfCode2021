@@ -3,12 +3,12 @@ import ast
 text = open('InputTxt/day18input.txt').read().strip().splitlines()
 data = []
 for line in text:
-    data.append(eval(line))
+    data.append(ast.literal_eval(line))
 
 
 
 def add(a, b):
-    return reduce_([a, b])
+    return reduce_([a,b])
 
 def reduce_(string):
     explosion, chain = explode(string)
@@ -25,13 +25,13 @@ def split_l(string):
     if isinstance(string, list):
         occurred, chain = split_l(string[0])
         if occurred:
-            return True, [chain, chain[1]]
+            return True, [chain, string[1]]
         else:
             occurred_two, chain_two = split_l(string[1])
             return occurred_two, [chain, chain_two]
     else:
         if string >= 10:
-            return True, [string // 2, (string + 1) // 2]
+            return True, [(string // 2), ((string + 1) // 2)]
         else:
             return False, string
 
@@ -41,7 +41,8 @@ def explode(c):
     index = 0
     while index < len(chain):
         if not chain[index].isdigit():
-            new_chain.append(chain[index])
+            if chain[index] != ' ':
+                new_chain.append(chain[index])
             index += 1
         else:
             current = index
@@ -81,6 +82,11 @@ def magnitude(string):
         return 3 * magnitude(string[0]) + 2 * magnitude(string[1])
     else:
         return string
+
+total = data[0]
+for line in data[1:]:
+    total = add(total, line)
+print(magnitude(total))
 
 answer = None
 for x in data:
